@@ -40,13 +40,13 @@ if ($search) {
     $class_search = 'prompt';
 }
 if ($read_only) {
-    $define_type_field .= "<input $setting id='$id' class='$form_id $class_input' name ='$id' type='hidden' value=\"$value\">";
+    $define_type_field .= "<input $setting id='$id' class='$form_id $class_input' name ='$id' type='hidden' value='$value'>";
 } else {
 
     if ($icon or $clearable)
         $define_type_field .= "<div class='ui $icon_postition icon input'>";
 
-    $define_type_field .= "<input type='text' class='ui-input $class_search $form_id $class_input' name ='$id' $disabled value=\"$value\" id='$id' placeholder='$placeholder'  $option>";
+    $define_type_field .= "<input type='text' class='ui-input $class_search $form_id $class_input' name ='$id' $disabled value='$value' id='$id' placeholder='$placeholder'  $option>";
 
     if ($search)
         $define_type_field .= "<div class='results'></div></div>";

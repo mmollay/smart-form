@@ -6,9 +6,9 @@ if ($tabs) {
 	if (! $active) {
 		$active = key ( $tabs );
 	}
-	$array_tab[$count_tab] = $active;
-	$array_content_class[$count_tab] = $content_class;
-	$array_class[$count_tab] = $class;
+	$array_tab [$count_tab] = $active;
+	$array_content_class [$count_tab] = $content_class;
+	$array_class [$count_tab] = $class;
 	$content_class = '';
 	$class = '';
 }
@@ -16,17 +16,17 @@ if ($close == true) {
 	$count_tab --;
 }
 
-if (! $array_content_class[$count_tab]) {
+if (! $array_content_class [$count_tab]) {
 	$tab_content_class = "attached segment";
 } else {
-	$tab_content_class = $array_content_class[$count_tab];
+	$tab_content_class = $array_content_class [$count_tab];
 }
 
-if (! $array_class[$count_tab]) {
+if (! $array_class [$count_tab]) {
 	$tab_class = "top attached tabular";
 } else {
-	$tab_class = $array_class[$count_tab];
-	if (($tab_class == 'secondary' or $tab_class == 'secondary pointing') and ! $array_content_class[$count_tab])
+	$tab_class = $array_class [$count_tab];
+	if (($tab_class == 'secondary' or $tab_class == 'secondary pointing') and ! $array_content_class [$count_tab])
 		$tab_content_class = '';
 }
 
@@ -36,7 +36,7 @@ if ($close == true) {
 	// Start
 	$field .= "<div class='field'><div id='tabgroup_$id'><div class='ui menu $tab_class {$arr['form']['size']}'>";
 	foreach ( $tabs as $tab_key => $tab_value ) {
-		if ($array_tab[$count_tab] == $tab_key) {
+		if ($array_tab [$count_tab] == $tab_key) {
 			$set_active = 'active';
 		} else {
 			$set_active = '';
@@ -51,8 +51,8 @@ if ($close == true) {
 if ($tab) {
 	if (! $tabs)
 		$field .= "</div>";
-	
-	if ($array_tab[$count_tab] == $tab)
+
+	if ($array_tab [$count_tab] == $tab)
 		$set_active = 'active';
 	else {
 		$set_active = '';

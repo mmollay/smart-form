@@ -18,7 +18,7 @@ if ($max)
     $array = get_array_number_range($min, $max, $step);
 
 if ($placeholder === '')
-    $placeholder = "--Bitte wählen--";
+    $placeholder = "--Please choose--";
 
 // else
 // $option .= "<div class='item' data-value='' >$placeholder</div>";

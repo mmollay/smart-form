@@ -1,12 +1,11 @@
 <?php
 //Accordion as well Nested Accordions possible
-
-if (!$close && $title && ! $split) {
+if (! $close && $title && ! $split) {
 	$count_accordion ++;
-	$arr_accordion_class[$count_accordion] = $class;
+	$arr_accordion_class [$count_accordion] = $class;
 } elseif ($close) {
 	$count_accordion --;
-	$arr_accordion_close[$count_accordion] = $close;
+	$arr_accordion_close [$count_accordion] = $close;
 }
 
 // accordion
@@ -17,8 +16,8 @@ else
 
 if ($close) {
 	$field .= "</div>";
-	if ($arr_accordion_close[$count_accordion] == $close) {
-		$field .= "</div></div>"; 
+	if ($arr_accordion_close [$count_accordion] == $close) {
+		$field .= "</div></div>";
 	}
 } else {
 	if ($split)
@@ -30,7 +29,7 @@ if ($close) {
 			} else {
 				$add_accordion_class = '';
 			}
-			$field .= "<div class='field'><div id='$id' class='$add_accordion_class {$arr_accordion_class[$count_accordion]} accordion'>"; 
+			$field .= "<div class='field'><div id='$id' class='$add_accordion_class {$arr_accordion_class[$count_accordion]} accordion'>";
 		}
 	}
 	$field .= "<div  class='$add_active title'><i class='icon dropdown'></i>$title</div><div class='$add_active content'>";

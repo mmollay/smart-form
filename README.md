@@ -1,4 +1,4 @@
-# Smart-Form v2.0
+###Smart-Form v2.0
 
 Smart-Form is a form and list generator, which ensures a quick setup via simple array design.
 

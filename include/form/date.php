@@ -1,5 +1,5 @@
 <?php
-$placeholder = 'Datum wählen';
+$placeholder = 'Choose Date';
 
 if (! $setting)
 	$json_setting = "'type':'date',";

@@ -7,12 +7,13 @@ $arr ['value'] ['content'] = 'Max Muster';
 $arr ['value'] ['age'] = '10';
 
 // Header
-$arr ['header'] = array ('title' => "<i class='icon newspaper'></i>Formular",'text' => 'here you get it','class' => 'small diverding white','segment_class' => 'attached message' );
+$arr ['header'] = array ('title' => "Formular",'text' => 'here you get it','class' => 'small red','segment_class' => 'attached message', 'icon'=>'newspaper red' );
 $arr ['footer'] = array ('text' => "Have a nice time",'segment_class' => 'attached message' );
+
 
 // Config - Fields
 $arr ['form'] = array ('id' => 'form_newsletter','action' => 'ajax/handler.php','class' => 'segment attached','width' => '800','align' => 'center' );
-$arr ['ajax'] = array ('success' => "$('#show_data').html(data);",'dataType' => 'html' );
+$arr ['ajax'] = array ('success' => "$('#show_data').html(data);",'dataType' => 'html', 'onLoad'=>"alert('Hallo'); " );
 
 $arr ['field'] ['content'] = array ('type' => 'content','text' => "<b>This is:</b> {data}" );
 $arr ['field'] ['drop'] = array ('type' => 'dropdown','label' => 'Drop','search' => true,'clearable' => true,'array' => array ('wood' => 'Wood','water' => 'Water' ) );
