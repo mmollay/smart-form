@@ -1,7 +1,9 @@
 <?php
-
-/*
+/**
+ * *************************************************************
+ * update: 10.09.2020 mm@ssi.at
  * $array => $var von der Datenbank - wird für Filter verwendet
+ * *************************************************************
  */
 $GLOBALS ['array'] = $array;
 // Muss bei der SQL -Query Am Anfang angeführt sein
@@ -15,14 +17,7 @@ if ($arr ['list'] ['template']) {
 	 * Template {title}<br>{text}
 	 * ******************************************************************
 	 */
-	$output_template .= preg_replace_callback ( '!{(.*?)}!', function ($matches) {
-		$array = $GLOBALS ['array'];
-		$key = $matches [1];
-
-		$array [$key] = text_output ( $array [$key] );
-
-		return $array [$key];
-	}, $arr ['list'] ['template'] );
+	$output_template .= temp_replace ( $arr ['list'] ['template'] );
 } else {
 	/**
 	 * ******************************************************************
@@ -109,7 +104,7 @@ if ($arr ['list'] ['template']) {
 				foreach ( $arr ['th'] [$key] ['gallery'] as $key_gallery => $value_gallery ) {
 					$array_gallery [$key_gallery] = fu_call_value ( $array [$key], array ('default' => $value_gallery ) );
 				}
-				$array_gallery [id] = $id;
+				$array_gallery ['id'] = $id;
 				$field_value = fu_call_gallery ( $array_gallery );
 			} else {
 				// Austauschen eines Wertes
@@ -121,11 +116,61 @@ if ($arr ['list'] ['template']) {
 				$add_class_selectable = 'selectable';
 
 			$list_td .= "<td class='$add_class_selectable $class' $add_span_td >";
-			if ($td_href)
-				$list_td .= "<a href='$td_href'>";
+
+			/**
+			 * **********************************
+			 * Clickable Content open the Modal
+			 * mm@ssi.at 10.09.2020
+			 * **********************************
+			 */
+
+			$onclick = '';
+			$td_href = '';
+			$modal_popup = '';
+
+			$th_modal = $arr ['th'] [$key] ['modal'];
+
+			if (is_array ( $th_modal )) {
+				$modal_id = $th_modal ['id'];
+				$modal_popup = $th_modal ['popup'];
+				$modal_onclick = $th_modal ['onclick'];
+			} else
+				$modal_id = $th_modal;
+
+			if ($modal_id) {
+				$url = $_SESSION ['workpath'] . "/" . $arr ['modal'] [$modal_id] ['url'];
+				$url = preg_replace ( "/{id}/", $id, $url );
+				$onclick = "call_semantic_form('$id','$modal_id','$url','{$arr['list']['id']}','{$arr['modal'][$key]['focus']}');";
+			}
+
+			//Change template {title}
+			$modal_popup = temp_replace ( $modal_popup );
+			$modal_onclick = temp_replace ( $modal_onclick );
+
+			if ($td_href or ($onclick or $modal_onclick)) {
+				if ($onclick or $modal_onclick)
+					$onclick = "href=# onclick=\"$onclick $modal_onclick\" ";
+
+				if ($td_href)
+					$href = "href='$td_href";
+
+				if ($modal_popup)
+					$modal_popup = "data-content = '$modal_popup' ";
+
+				$list_td .= "<a $href $onclick style='display: block;' class='ui tooltip' $modal_popup>";
+			}
+
 			$list_td .= $field_value;
+
 			if ($td_href)
 				$list_td .= "</a>";
+
+			/**
+			 * ************************************
+			 * ** END - Clickable Content Modal ***
+			 * ************************************
+			 */
+
 			$list_td .= "</td>";
 		}
 

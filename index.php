@@ -27,6 +27,7 @@
 			<a class="item" href='examples/formular_xhr.php'><i class="right triangle icon"></i>Formular (xhr)</a> 
 			<a class="item" href='examples/formular.php'><i class="right triangle icon"></i>Formular (komplex)</a> 
 			<a class="item" href='examples/list.php'><i class="right triangle icon"></i>Demo-List</a>
+			<a class="item" href='examples/list_temp.php'><i class="right triangle icon"></i>Demo-List (Template)</a>
 		</div>
 
 		<h1 class="ui header">Tools</h1>

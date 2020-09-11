@@ -2,6 +2,7 @@
 $total_td = '';
 
 
+if (!is_array($arr ['th'])) return;
 
 foreach ( $arr ['th'] as $key => $value ) {
 

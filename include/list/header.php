@@ -10,7 +10,7 @@ if ($arr ['list'] ['header'] === false)
 else
 	$arr ['list'] ['header'] = true;
 
-if ($arr ['list'] ['header']) {
+	if ($arr ['list'] ['header'] && is_array($arr ['th'])) {
 	$output_head = "<thead class='full-width'>";
 
 	//Anzahl der Gesamtfelder - benötigt für die Fusszeile
@@ -18,6 +18,7 @@ if ($arr ['list'] ['header']) {
 	if (is_array ( $arr ['tr'] ['button'] ['left'] )) {
 		$count_th ++;
 	}
+	
 	if (is_array ( $arr ['tr'] ['button'] ['right'] )) {
 		$count_th ++;
 	}

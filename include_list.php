@@ -3,7 +3,7 @@
  * --------------------------------------------------------------------------------------------------------
  * | SMART - LIST (ssi-Product)
  * | List-Generator: Using Semantic-UI Library
- * | 12.02.2020 - mm@ssi.at
+ * | 09.09.2020 - mm@ssi.at
  * | Version 2.x
  * --------------------------------------------------------------------------------------------------------
  */
@@ -375,25 +375,45 @@ function call_list($config_path, $mysql_connect_path) {
 	if ($run_time && $arr ['list'] ['loading_time'] === true)
 		$loading_time = "<br>(" . $run_time . "sek)";
 
+	/**
+	 * *****************************************************************
+	 * MODAL- GENERATOR
+	 * mm@ssi.at Update 09.09.2020
+	 * - With button on den bottom
+	 * *****************************************************************
+	 */
+
 	if (is_array ( $arr ['modal'] )) {
 
-		foreach ( $arr ['modal'] as $key => $value ) {
-			$modal_title = $value ['title'];
-			$modal_class = $value ['class'];
-			$modal_url = $value ['url'];
-			$close_button = $value ['close_button'];
+		foreach ( $arr ['modal'] as $modal_key => $modal_value ) {
+			$modal_title = $modal_value ['title'];
+			$modal_class = $modal_value ['class'];
+			$modal_url = $modal_value ['url'];
+			$modal_button = $modal_value ['button'];
 
-			if ($close_button == 'hide') {
-				$close_button2 = '';
-				// $close_button = '';
-			} else {
-				// $close_button = "<i class='close icon'></i>";
-				$close_button2 = "<div style='float:right'><a href=# onclick=\"$('#$key').modal('hide'); $('#$key>.content').empty(); \"><i class='close icon'></i></a></div><div style='clear:both'></div>";
+			//$close_button = $modal_value ['close_button'];
+			//$close_button = "<div style='float:right'><a href=# onclick=\"$('#$modal_key').modal('hide'); $('#$modal_key>.content').empty(); \"><i class='close icon'></i></a></div><div style='clear:both'></div>";
+
+			$modal .= "<div id='$modal_key' class='ui modal $modal_class'>";
+			$modal .= "<i class='close icon'></i>";
+			$modal .= "<div class='header'>$modal_title </div>";
+			$modal .= "<div class='content'></div>";
+
+			if (is_array ( $modal_button )) {
+				$modal .= "<div class='actions'>";
+				foreach ( $modal_button as $button_key => $button_array ) {
+					$button_array_icon = '';
+					$class_icon = '';
+					if ($button_array ['icon']) {
+						$button_array_icon = "<i class='icon {$button_array['icon']}'></i>";
+						$class_icon = 'icon';
+					}
+					$modal .= "<div class='ui $button_key $class_icon button {$button_array['color']}' onclick =\"{$button_array['onclick']}\">$button_array_icon {$button_array['title']}</div>";
+				}
+				$modal .= "</div>";
 			}
 
-			if (isset ( $modal_title ))
-				$modal_header = "<div class='header'>$modal_title $close_button2</div>";
-			$modal .= "<div id='$key' class='ui modal $modal_class'>$close_button$modal_header<div class='content'></div></div>";
+			$modal .= "</div>";
 			$modal_header = '';
 		}
 	}
@@ -1146,11 +1166,28 @@ function fu_call_gallery($array) {
 	foreach ( $images as $image ) {
 		$image_thumb = $image = preg_replace ( "[{$array['document_root']}]", '/', $image );
 		$image = preg_replace ( "[thumbnail/]", '', $image );
-		$output .= "<a href='$image' data-fancybox='gallery{$array[id]}' >$image<img class='ui image tooltip' src='$image_thumb' title='Bild vergrößern'></a>";
+		$output .= "<a href='$image' data-fancybox='gallery{$array['id']}' >$image<img class='ui image tooltip' src='$image_thumb' title='Bild vergrößern'></a>";
 	}
 	if (! $output)
 		$output = "<img class='ui image' src='../ssi_smart/smart_form/img/image.png'>";
 	return "<div class='ui small rounded images'>" . $output . "</div>";
+}
+
+/**
+ * ****************************************************************
+ * CHANGE {value} form Tables
+ * ****************************************************************
+ */
+function temp_replace($value) {
+	$value = preg_replace_callback ( '!{(.*?)}!', function ($matches) {
+		$array = $GLOBALS ['array'];
+		$key = $matches [1];
+
+		$array [$key] = text_output ( $array [$key] );
+
+		return $array [$key];
+	}, $value );
+	return $value;
 }
 
 ?>
