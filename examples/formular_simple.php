@@ -4,8 +4,11 @@ include_once ("../include_form.php");
 $arr ['form'] = array ('id' => 'form_newsletter','action' => 'ajax/handler.php','class' => 'segment attached','width' => '800','align' => 'center' );
 $arr ['ajax'] = array ('success' => "$('#show_data').html(data);",'dataType' => 'html' );
 $arr ['field'] ['date'] = array ('type' => 'date','label' => 'Date' );
-$arr ['field'] ['firstname'] = array ('type' => 'input','label' => 'Firstname','placeholder' => 'Firstname' );
-$arr ['field'] ['secondname'] = array ('type' => 'input','label' => 'Secondname','placeholder' => 'Secondname' );
+$arr ['field'] ['firstname'] = array ('grid'=>'first', 'type' => 'input','label' => 'Firstname','placeholder' => 'Firstname' );
+$arr ['field'] ['secondname'] = array ('grid'=>'second', 'type' => 'input','label' => 'Secondname','placeholder' => 'Secondname' );
+$arr ['field'] ['more'] = array ('grid'=>'more', 'type' => 'input','label' => 'More' );
+$arr ['field'] ['grid'] = array ('type' => 'grid','class' => '','column' => [ "first" => '4',"second" => "4","more" => "8" ] );
+
 $arr ['field'] ['submit'] = array ('type' => 'button','value' => 'Submit','class' => 'submit','align' => 'center' );
 
 $output_form = call_form ( $arr );

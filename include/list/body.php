@@ -149,7 +149,7 @@ if ($arr ['list'] ['template']) {
 
 			if ($td_href or ($onclick or $modal_onclick)) {
 				if ($onclick or $modal_onclick)
-					$onclick = "href=# onclick=\"$onclick $modal_onclick\" ";
+					$onclick = "onclick=\"$onclick $modal_onclick\" ";
 
 				if ($td_href)
 					$href = "href='$td_href";
@@ -157,7 +157,7 @@ if ($arr ['list'] ['template']) {
 				if ($modal_popup)
 					$modal_popup = "data-content = '$modal_popup' ";
 
-				$list_td .= "<a $href $onclick style='display: block;' class='ui tooltip' $modal_popup>";
+				$list_td .= "<a $href $onclick style='display: block; cursor:pointer;' class='ui tooltip' $modal_popup>";
 			}
 
 			$list_td .= $field_value;
