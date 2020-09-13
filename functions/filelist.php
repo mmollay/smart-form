@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * *******************************************************************************************************************
  * ARRAY für alle gültigen Länder!
@@ -227,8 +225,10 @@ function upload_card_admin($url, $name, $id) {
 			$thumbnail_max_height = $_SESSION ['upload_config'] ['image_versions'] ['thumbnail'] ['max_height'];
 			$thumbnail_crop = $_SESSION ['upload_config'] ['image_versions'] ['thumbnail'] ['crop'];
 
+			
+			
 			$file_time1 = filemtime ( $image_path );
-
+			
 			// auslesen und vergleichen ob sich die Thumbnailwerte verändert haben
 			if (is_file ( $image_path_thumb )) {
 				list ( $thumb_width, $thumb_height, $type, $attr ) = getimagesize ( $image_path_thumb );
@@ -243,7 +243,7 @@ function upload_card_admin($url, $name, $id) {
 				// ThumbDir erzeugen wenn es noch nicht vorhanden ist
 				if (! is_dir ( $_SESSION ['upload_dir'] . "/thumbnail/" ))
 					exec ( "mkdir {$_SESSION['upload_dir']}/thumbnail/" );
-				include_once (__DIR__.'/../phpthumb/ThumbLib.inc.php');
+				include_once (__DIR__ . '/../phpthumb/ThumbLib.inc.php');
 				// Thumbnail erzeugen mit den Paramenter vom Config (siehe include_file_uplaod.inc.php
 				$thumb = PhpThumbFactory::create ( $image_path );
 				$thumb->adaptiveResize ( $thumbnail_max_width, $thumbnail_max_height )->save ( $image_path_thumb );
