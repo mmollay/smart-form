@@ -21,13 +21,32 @@ if ($arr ['list'] ['template']) {
 } else {
 	/**
 	 * ******************************************************************
-	 * Ausgabe als Table
+	 * Output as a Table
 	 * ******************************************************************
 	 */
 
 	$button = buttons2 ( $id, $arr, 'tr', $array );
 
 	$list_td .= "<tr id='tr_$id'>";
+
+	/**
+	 * *****************************************************************
+	 * Output - Checkbox for multiselect
+	 * *****************************************************************
+	 */
+	if (is_array ( $arr ['checkbox'] )) {
+		if ($arr ['checkbox'] ['title']) {
+			$checkbox_title = temp_replace ( $arr ['checkbox'] ['label'] );
+		} else {
+			$checkbox_add_class = 'fitted';
+		}
+
+		if ($arr ['checkbox'] ['align'])
+			$checkbox_add_tb_class = "class='" . $arr ['checkbox'] ['align'] . " aligned'";
+
+		//Checkbox
+		$list_td .= "<td $checkbox_add_tb_class ><div class='ui child checkbox $checkbox_add_class'><input class='checkbox-{$arr['list']['id']}' value='$id' type='checkbox' name='type'><label>$checkbox_title</label></div></td>";
+	}
 
 	if ($button ['left'])
 		$list_td .= $button ['left'];
@@ -65,7 +84,7 @@ if ($arr ['list'] ['template']) {
 		} else if ($format) {
 			$array [$key] = $array [$key] . "$format";
 		}
-
+		
 		$array [$key] = preg_replace ( "/\{id\}/", $id, $array [$key] );
 
 		if ($nowrap)
@@ -124,10 +143,6 @@ if ($arr ['list'] ['template']) {
 			 * **********************************
 			 */
 
-			$onclick = '';
-			$td_href = '';
-			$modal_popup = '';
-
 			$th_modal = $arr ['th'] [$key] ['modal'];
 
 			if (is_array ( $th_modal )) {
@@ -164,6 +179,10 @@ if ($arr ['list'] ['template']) {
 
 			if ($td_href)
 				$list_td .= "</a>";
+
+			$onclick = '';
+			$td_href = '';
+			$modal_popup = '';
 
 			/**
 			 * ************************************

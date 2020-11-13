@@ -3,12 +3,12 @@
  * --------------------------------------------------------------------------------------------------------
  * | SMART - LIST (ssi-Product)
  * | List-Generator: Using Semantic-UI Library
- * | 09.09.2020 - mm@ssi.at
- * | Version 2.x
+ * | 13.10.2020 - mm@ssi.at
+ * | Version 2.2
  * --------------------------------------------------------------------------------------------------------
  */
 session_start ();
-function call_list($config_path, $mysql_connect_path) {
+function call_list($config_path, $mysql_connect_path, $data = false) {
 	$count_th = '';
 
 	$str_default_text_notfound = "<i class='icon search'></i>Keine Einträge für {data} vorhanden.";
@@ -85,254 +85,42 @@ function call_list($config_path, $mysql_connect_path) {
 	if ($_SESSION ['smart_list_config'])
 		setcookie ( "smart_list_config", serialize ( $_SESSION ['smart_list_config'] ), time () + 60 * 60 * 24 * 365, '/', $_SERVER ['HTTP_HOST'] );
 
+	/**
+	 * ************************************************************************
+	 * CALL - DATA (mysql or array)
+	 * ************************************************************************
+	 */
+
 	if (! $arr ['search'] ['show_empty'] or $GLOBALS ['input_search']) {
+
 		$timeStart = microtime_float ();
-		/**
-		 * ********************************************************
-		 * FILTER - SEARCH
-		 * ********************************************************
-		 */
 
-		$GLOBALS ['arr'] = $arr;
-
-		if (is_array ( $arr ['filter'] )) {
-
-			foreach ( $arr ['filter'] as $key => $array2 ) {
-
-				$filter_array = array ('list_para' => $arr ['list'],'class' => $array2 ['class'],'query' => $array2 ['query'],'value' => $array2 ['value'],'table' => $array2 ['table'],'default_value' => $array2 ['default_value'],'var' => $array2 ['array'],'id' => $key,'list_id' => $list_id,
-						'placeholder' => $array2 ['placeholder'],'setting' => $array2 ['settings'] );
-
-				$array_filter = call_filter ( $array2 ['type'], $filter_array, 'orange' );
-
-				$fields_filter .= $array_filter ['html'];
-				$jquery .= $array_filter ['js'];
-				$mysql_filter .= $array_filter ['mysql'];
-			}
-		}
-
-		// CLEAR - Button für Select
-		if ($fields_filter) {
-			// $jquery .= "$('#filter_reset').click(function(){ $('.filter, .$list_id').dropdown('clear'); call_semantic_table('$list_id','reset'); });";
-			$fields_filter .= "<button onclick=\"$('.filter, .$list_id').dropdown('clear'); call_semantic_table('$list_id','reset')\" class='button icon mini ui tooltip' title='Filter zurücksetzen' id='filter_reset'><i class='undo icon'></i></button>";
-		}
-
-		/**
-		 * ********************************************************
-		 * ORDER BY
-		 * ********************************************************
-		 */
-		if (is_array ( $arr ['order'] ['array'] )) {
-			if (! $arr ['order'] ['class'])
-				$arr ['order'] ['class'] = 'inline';
-			$array_order = call_filter ( 'select', array ('list_para' => $arr ['list'],'query' => $arr ['order'] ['query'],'var' => $arr ['order'] ['array'],'id' => "order",'list_id' => $list_id,'class' => $arr ['order'] ['class'],'value' => $arr ['order'] ['default'] ) );
-			$dropdown_order = $array_order ['html'];
-			$jquery .= $array_order ['js'];
-		}
-
-		if (! $_POST ['table_reload'])
-			$limit_pos = 0;
-		else {
-			// Limit Position
-			$limit_pos = $_SESSION ['limit_pos'] [$list_id];
-		}
-
-		if (! $arr ['mysql'] ['limit'])
-			$arr ['mysql'] ['limit'] = '10';
-		$mysql_limit = $arr ['mysql'] ['limit'];
-
-		// MYSQL - Table und Fields speziell definiert
-		if ($arr ['mysql'] ['table'] && $arr ['mysql'] ['field']) {
-			$sql = "SELECT " . $arr ['mysql'] ['field'] . " FROM " . $arr ['mysql'] ['table'] . " WHERE 1 ";
-
-			$sql_count = "SELECT SQL_CALC_FOUND_ROWS * FROM " . $arr ['mysql'] ['table'] . " WHERE 1 ";
+		if (is_array ( $arr ['mysql'] )) {
+			//DATA - MYSQL ******************************************************************************************
+			include (__DIR__ . '/include/list/data_mysql.php');
 		} else {
-			$sql = $sql_count = $arr ['mysql'] ['query'] . " WHERE 1 ";
-		}
-
-		if ($arr ['mysql'] ['group']) {
-			$sql_group .= ' GROUP by ' . $arr ['mysql'] ['group'];
-		}
-
-		if ($arr ['mysql'] ['where']) {
-			$sql .= $arr ['mysql'] ['where'];
-			$sql_count .= $arr ['mysql'] ['where'];
-			$sql_export .= $arr ['mysql'] ['where'];
-			$sql_total .= $arr ['mysql'] ['where'];
-		}
-
-		if ($mysql_filter) {
-			$sql .= $mysql_filter;
-			$sql_count .= $mysql_filter;
-			$sql_export .= $mysql_filter;
-			$sql_total .= $mysql_filter;
-		}
-
-		if ($arr ['mysql'] ['debug'])
-			echo "<pre>Count:<br>" . htmlspecialchars ( $sql_count . $sql_group ) . "</pre><hr>";
-
-		$query_count = $GLOBALS ['mysqli']->query ( $sql_count . $sql_group ) or die ( mysqli_error ( $GLOBALS ['mysqli'] ) );
-		$count_line = mysqli_num_rows ( $query_count );
-
-		// 		$result = $GLOBALS ['PDO_db']->prepare ( "$sql_count . $sql_group" );
-		// 		$result->execute();
-		// 		$count_line =$result->fetchColumn();
-		// 		echo "$sql_count . $sql_group";
-
-		$limit = $arr ['mysql'] ['limit'];
-		if ($limit >= $count_line)
-			$limit = $count_line;
-		$txt_count_all = "Einträge: $limit von <b>$count_line</b>";
-
-		if ($input_search != '' and $arr ['mysql'] ['like']) {
-			$array_explode = explode ( ',', $arr ['mysql'] ['like'] );
-
-			// New version Like (Ausgabe auch auf bei mehreren Spalten wenn diese leer sind
-			foreach ( $array_explode as $value ) {
-				if ($sql_value)
-					$sql_value .= " OR ";
-				$sql_value .= "$value LIKE '%$input_search%' ";
-			}
-			$sql_like = " AND ($sql_value) ";
-
-			// $sql_like = " AND (CONCAT({$arr['mysql']['like']}) LIKE '%$input_search%') ";
-			$sql_export .= $sql_like;
-			$sql .= $sql_like;
-			$sql_count .= $sql_like;
-			$sql_total .= $sql_like;
-			$query_count_filter = $GLOBALS ['mysqli']->query ( $sql_count . $sql_group ) or die ( mysqli_error ( $GLOBALS ['mysqli'] ) );
-
-			$count_line = $count_line_filter = mysqli_num_rows ( $query_count_filter );
-			$txt_count_filter = "| Gefiltert: <b>$count_line_filter</b>";
-		}
-
-		// wenn mehr als 3 Zeichen sind beginnt die Suche
-		if (strlen ( $input_search ) > 2 and $arr ['mysql'] ['match']) {
-
-			// hängt ein +voran wenn mehr als ein Wort in der Suchzeile ist
-			if (str_word_count ( $input_search, 0, 'äüöÄÜÖß' ) > 1)
-				$input_search = "+" . preg_replace ( '/ (\w+)/', ' +$1', $input_search );
-
-			$sql_like .= "AND MATCH({$arr['mysql']['match']}) AGAINST('$input_search' IN BOOLEAN MODE) "; //
-
-			$sql_export .= $sql_like;
-			$sql .= $sql_like;
-			$sql_count .= $sql_like;
-
-			if ($arr ['mysql'] ['charset']) {
-				if ($arr ['mysql'] ['charset'] === true)
-					$arr ['mysql'] ['charset'] = 'utf8';
-				$GLOBALS ['mysqli']->set_charset ( $arr ['mysql'] ['charset'] );
-			}
-
-			$query_count_filter = $GLOBALS ['mysqli']->query ( $sql_count . $sql_group ) or die ( mysqli_error ( $GLOBALS ['mysqli'] ) );
-			$count_line = $count_line_filter = mysqli_num_rows ( $query_count_filter );
-			$txt_count_filter = "| Gefiltert: <b>$count_line_filter</b>";
-		}
-
-		if ($count_line > $mysql_limit) {
-
-			// $limit_pos = 1;
-			/**
-			 * ********************************************************************
-			 * LIMIT-Bar [1][2]][3]...
-			 * ********************************************************************
-			 */
-			// $count_line..... Anzahl aller Db-Sätze;
-			// $mysql_limit.... Max Anzahl der Db-Sätze pro Aufruf
-			// $limit_pos...... Positon des aktuellen Zeigers
-			// $limit_pos_prev. Vorhergehende Position
-			// $limit_pos_next. Nächste Position
-			$count_item = ceil ( $count_line / $mysql_limit );
-
-			if (is_numeric ( $limit_pos )) {
-				$limit_pos_prev = $limit_pos - 1;
-			}
-
-			if (is_numeric ( $limit_pos )) {
-				$limit_pos_next = $limit_pos + 1;
-			}
-			// Maxiamale Anzahl der Felder
-
-			$max_field_item = 15;
-
-			if ($count_item > $max_field_item)
-				$count_item = $max_field_item;
-
-			$txt_limitbar = "<div class='ui right floated pagination menu'>";
-			if ($limit_pos > 0)
-				$txt_limitbar .= "<a class='icon item' onclick = \"call_semantic_table('$list_id','limit_pos','',$limit_pos_prev);\" ><i class='left chevron icon'></i></a>";
-
-			for($iii = 0; $iii < $count_item; $iii ++) {
-				if ($limit_pos == $iii)
-					$item_class = 'active';
-				else
-					$item_class = '';
-				$iii_text = $iii + 1;
-				$txt_limitbar .= "<a class='item $item_class' onclick = \"call_semantic_table('$list_id','limit_pos','',$iii);\" >$iii_text</a>";
-			}
-
-			if ($count_item > $limit_pos_next)
-				$txt_limitbar .= "<a class='icon item' onclick = \"call_semantic_table('$list_id','limit_pos','',$limit_pos_next);\" ><i class='right chevron icon'></i></a>";
-			$txt_limitbar .= "</div>";
-		}
-
-		// Wenn weniger als 5 Einträge sind wird der Zähler zurückgesetzt
-		// TODO: Der Zähler soll überhaupt zurück gesetzt werden - Muss aber noch überarbeitet werden 04.07.2016
-
-		if ($limit < 5) {
-			$limit_pos = 0;
-		}
-
-		if (! $limit_pos)
-			$limit_pos = "0";
-		else
-			$limit_pos = $limit_pos * $mysql_limit;
-
-		$sql .= $arr ['mysql'] ['in'];
-
-		if ($arr ['mysql'] ['group'])
-			$sql .= $sql_group;
-
-		$sql_export .= $sql_group;
-
-		if ($arr ['order'] ['default']) {
-			$arr ['mysql'] ['order'] = $arr ['order'] ['default'];
-		}
-		if ($arr ['mysql'] ['order']) {
-			if ($_SESSION ['filter'] [$list_id] ['order'])
-				$arr ['mysql'] ['order'] = $_SESSION ['filter'] [$list_id] ['order'];
-			$sql .= ' ORDER BY ' . $arr ['mysql'] ['order'];
-			$sql_export .= ' ORDER BY ' . $arr ['mysql'] ['order'];
-		}
-
-		if ($mysql_limit)
-			$sql .= ' LIMIT ' . $limit_pos . ',' . $mysql_limit;
-
-		// $GLOBALS['mysqli']->query("SET NAMES 'utf8'");
-
-		if ($arr ['mysql'] ['debug'])
-			echo "<pre>List:<br>" . htmlspecialchars ( $sql ) . "</pre>";
-
-		// mysql_set_charset('utf8');
-
-		if ($arr ['mysql'] ['charset']) {
-			if ($arr ['mysql'] ['charset'] === true)
-				$arr ['mysql'] ['charset'] = 'utf8';
-			$GLOBALS ['mysqli']->set_charset ( $arr ['mysql'] ['charset'] );
-		}
-		$query = $GLOBALS ['mysqli']->query ( $sql ) or die ( mysqli_error ( $GLOBALS ['mysqli'] ) );
-		while ( $array = mysqli_fetch_array ( $query ) ) {
-			include (__DIR__ . '/include/list/body.php');
-			$no_body = true;
+			//DATA - ARRAY **************************************************************************************
+			include (__DIR__ . '/include/list/data_array.php');
 		}
 
 		$timeEnd = microtime_float ();
 
 		include (__DIR__ . '/include/list/header.php');
 
+		if (is_array ( $arr ['checkbox'] ))
+			$count_th ++;
+
 		if ($serial)
 			$count_th ++;
 	}
+
+	/**
+	 * ************************************************************************
+	 * END - CALL - DATA (mysql or array)
+	 * ************************************************************************
+	 */
+
+	include (__DIR__ . '/include/list/checkbox.php');
 
 	if ($arr ['search'] ['default_text_notfound']) {
 		$default_text_notfound = $arr ['search'] ['default_text_notfound'];
@@ -386,10 +174,12 @@ function call_list($config_path, $mysql_connect_path) {
 	if (is_array ( $arr ['modal'] )) {
 
 		foreach ( $arr ['modal'] as $modal_key => $modal_value ) {
+
 			$modal_title = $modal_value ['title'];
 			$modal_class = $modal_value ['class'];
 			$modal_url = $modal_value ['url'];
 			$modal_button = $modal_value ['button'];
+			$modal_id = $modal_value ['id'];
 
 			//$close_button = $modal_value ['close_button'];
 			//$close_button = "<div style='float:right'><a href=# onclick=\"$('#$modal_key').modal('hide'); $('#$modal_key>.content').empty(); \"><i class='close icon'></i></a></div><div style='clear:both'></div>";
@@ -402,13 +192,25 @@ function call_list($config_path, $mysql_connect_path) {
 			if (is_array ( $modal_button )) {
 				$modal .= "<div class='actions'>";
 				foreach ( $modal_button as $button_key => $button_array ) {
+					$button_class = $button_array ['class'];
+					$form_id = $button_array ['form_id']; // verknüpfung zum Formular
+
+					if ($form_id) {
+						$onclick = "$('#$form_id').submit();";
+					}
+
+					if ($onclick or $button_array ['onclick'])
+						$set_onclick = "onclick =\"$onclick {$button_array['onclick']}\"";
+					else
+						$set_onclick = '';
+
 					$button_array_icon = '';
 					$class_icon = '';
 					if ($button_array ['icon']) {
 						$button_array_icon = "<i class='icon {$button_array['icon']}'></i>";
 						$class_icon = 'icon';
 					}
-					$modal .= "<div class='ui $button_key $class_icon button {$button_array['color']}' onclick =\"{$button_array['onclick']}\">$button_array_icon {$button_array['title']}</div>";
+					$modal .= "<div class='ui $button_key $button_class $class_icon button {$button_array['color']}' $set_onclick >$button_array_icon {$button_array['title']}</div>";
 				}
 				$modal .= "</div>";
 			}
@@ -460,14 +262,19 @@ function call_list($config_path, $mysql_connect_path) {
 	} else if (! $arr ['list'] ['hide']) {
 		// Table - Main
 		$output_table .= "<table class='ui table $list_size $list_class' style='$list_style'>";
+
+		//Sortierfunktion
 		$output_table .= $output_order;
+
 		//if ($show_th)
 		$output_table .= $output_head;
 		$output_table .= $output_body;
 
-		$output_table .= "<tfoot class='full-width'>";
-		// FOOTER 2
-		$output_table .= "<tr><th colspan=$count_th>$txt_count_all $txt_count_filter $txt_limitbar $loading_time</th></tr></tfoot>";
+		if ($arr ['list'] ['footer'] !== false) {
+			$arr ['list'] ['footer'] = true;
+			// FOOTER 2
+			$output_table .= "<tfoot class='full-width'><tr><th colspan=$count_th>$txt_count_all $txt_count_filter $txt_limitbar $loading_time</th></tr></tfoot>";
+		}
 
 		$output_table .= "</table>";
 	}
@@ -490,8 +297,8 @@ function call_list($config_path, $mysql_connect_path) {
 	if ($arr ['mysql'] ['like']) {
 		// Ladet Liste nach jeder Veränderung im INPUT-Search-Field NEU
 		$jquery .= "
-		$( '#input_search$list_id' ).on('input', function( event ) { 
-			call_semantic_table('$list_id','input_search','',$('#input_search$list_id').val());  
+		$( '#input_search$list_id' ).on('input', function( event ) {
+			call_semantic_table('$list_id','input_search','',$('#input_search$list_id').val());
 		});";
 	} elseif ($arr ['mysql'] ['match']) {
 		// Wenn Boolean verwendet wird
@@ -515,9 +322,14 @@ function call_list($config_path, $mysql_connect_path) {
 		}
 	}
 
+	if (is_array ( $arr ['checkbox'] )) {
+		$add_checkbox_js = "check_change_checkbox('$list_id');";
+	}
+
 	$js .= "
 	<script type=\"text/javascript\">
-			$(document).ready(function() {  
+			$(document).ready(function() {
+				$add_checkbox_js
 				$jquery
 				//$('.ui.modal>.content').empty();
 				$('.ui.modal').modal({ allowMultiple: true, observeChanges : true, autofocus: false });
@@ -564,7 +376,6 @@ function call_list($config_path, $mysql_connect_path) {
 	/**
 	 * *******************************************************
 	 */
-
 	$output_array ['html'] .= $output_table;
 	if ($_SESSION ['export'] ['field'])
 		$button_export = "<a href='$static_page_path/plugin/export.php?list_id=$list_id'>[ Export ]</a><br><br>";
@@ -985,10 +796,10 @@ function call_filter($type = 'select', $array, $color = false) {
 		// wird direkt geladen, damit der Refresh (und auch Autorfresh funktioniert
 		$array_output ['html'] .= "
 		<script type=\"text/javascript\">
-			$(document).ready(function() { 		
+			$(document).ready(function() {
 			$('#$filter_key').dropdown({ fullTextSearch : true, onChange(value, text) { call_semantic_table('$list_id','filter','$id',value); }, " . $setting . "});
 			});
-		</script>	
+		</script>
 		";
 	}
 
@@ -1190,4 +1001,72 @@ function temp_replace($value) {
 	return $value;
 }
 
-?>
+//Get header
+function get_th($arr, $position = false) {
+	if ($position)
+		$set_position = "_" . $position;
+
+	$tr_style = $arr ["tr$set_position"] ['style'];
+	$tr_align = $arr ["tr$set_position"] ['align'];
+
+	$outupt_head .= "<tr>"; // class='$tr_class' //wird nicht unterstützt
+
+	
+	if (is_array ( $arr ['checkbox'] ) && ! $position) {
+		if ($arr ['checkbox'] ['align'])
+			$checkbox_add_tb_class = "class='" . $arr ['checkbox'] ['align'] . " aligned'";
+			
+			//$output_head .= "<th><div class='item'><div class='ui master checkbox'><input type='checkbox' name='fruits'><label></label></div></th>";
+			$output .= "<th $checkbox_add_tb_class><div class='ui master checkbox $checkbox_add_class'><input class='checkbox-main-{$arr['list']['id']}' value='$id' type='checkbox' name='type'><label>" . $arr ['checkbox'] ['title'] . "</label></div></th>";
+			/**
+			 * **** END - Checkbox *********************************************
+			 */
+	}
+	
+	
+	if (is_array ( $arr ['tr'] ['button'] ['left'] ) && ! $position)
+		$output .= "<th style='$tr_style'></th>";
+
+	if ($arr ['list'] ['serial'] && ! $position) // Ausgabe eines Nummerkreislaufes - Title
+		$output .= "<th style='$tr_style' >Nr.</th>";
+
+	foreach ( $arr ['th' . $set_position] as $key => $value ) {
+
+		$title = $value ['title'];
+		//if ($title)
+		//	$show_th = true;
+		$colspan = $value ['colspan'];
+		$width = $value ['width'];
+		$class = $value ['class'];
+		$align = $value ['align'];
+		$tooltip = $value ['tooltip'];
+		$info = $value ['info'];
+		$style = $value ['style'];
+		if ($colspan)
+			$colspan = "colspan='$colspan' ";
+
+		if ($align or $tr_align) {
+			if ($tr_align)
+				$align = $tr_align;
+			$class .= " $align aligned ";
+		}
+
+		if ($width)
+			$th_style = "width:$width;";
+
+		if ($tooltip or $info) {
+			if ($info)
+				$tooltip = $info;
+			$str_tooltip = "title='$tooltip'";
+		} else
+			$str_tooltip = '';
+
+		$output .= "<th style='$th_style $style $tr_style' class='$class tooltip' $str_tooltip $colspan >$title</th>";
+	}
+
+	if ($arr ['tr'] ['button'] ['right'] && ! $position)
+		$output .= "<th></th>";
+
+	$output .= "</tr>";
+	return $output;
+}

@@ -3,8 +3,8 @@
  * --------------------------------------------------------------------------------------------------------
  * | SMART - FORM (ssi-Product)
  * | Form-Generator: Using Semantic-UI Library
- * | 06.09.2020 - mm@ssi.at
- * | Version 2.x
+ * | 30.09.2020 - mm@ssi.at
+ * | Version 2.1
  * --------------------------------------------------------------------------------------------------------
  */
 session_start ();
@@ -420,7 +420,7 @@ function call_form($arr) {
 			$data .= "\n\t\t $key : '$value' ,";
 		}
 	}
-
+	
 	// Hidden Field for db
 	if ($sql_key ['value']) {
 		$hidden .= "<input type=hidden name='update_id' id='update_id' value='{$sql_key['value']}' >";
@@ -623,11 +623,13 @@ function call_form($arr) {
 	$output ['js'] .= "
 					
 		function change_calendar_data(date){
-			date1 = new Date ( date );
-			date = date1.getDate();
-			year = date1.getFullYear();
-			month = date1.getMonth()+1;
-			return year+'-'+month+'-'+date;
+			if (date != null) {	
+				date1 = new Date ( date );
+				date = date1.getDate();
+				year = date1.getFullYear();
+				month = date1.getMonth()+1;
+				return year+'-'+month+'-'+date;
+			}
 		}
 		
 		
@@ -676,6 +678,7 @@ function call_form($arr) {
 			});
 			$jquery_focus
 			{$arr['ajax']['onLoad']}
+			{$arr['ajax']['onload']}
 		});
 		$add_function_submit";
 	$output ['js'] .= "</script>";

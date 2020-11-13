@@ -7,13 +7,12 @@ $arr ['value'] ['content'] = 'Max Muster';
 $arr ['value'] ['age'] = '10';
 
 // Header
-$arr ['header'] = array ('title' => "Formular",'text' => 'here you get it','class' => 'small red','segment_class' => 'attached message', 'icon'=>'newspaper red' );
+$arr ['header'] = array ('title' => "Formular",'text' => 'here you get it','class' => 'small red','segment_class' => 'attached message','icon' => 'newspaper red' );
 $arr ['footer'] = array ('text' => "Have a nice time",'segment_class' => 'attached message' );
-
 
 // Config - Fields
 $arr ['form'] = array ('id' => 'form_newsletter','action' => 'ajax/handler.php','class' => 'segment attached','width' => '800','align' => 'center' );
-$arr ['ajax'] = array ('success' => "$('#show_data').html(data);",'dataType' => 'html', 'onLoad'=>"alert('Hallo'); " );
+$arr ['ajax'] = array ('success' => "$('#show_data').html(data);",'dataType' => 'html' ); //,'onLoad' => "alert('Hallo');" 
 
 $arr ['field'] ['content'] = array ('type' => 'content','text' => "<b>This is:</b> {data}" );
 $arr ['field'] ['drop'] = array ('type' => 'dropdown','label' => 'Drop','search' => true,'clearable' => true,'array' => array ('wood' => 'Wood','water' => 'Water' ) );
@@ -43,7 +42,9 @@ $arr ['field'] ['email'] = array ('type' => 'input','placeholder' => "Email",'la
 // Accordion Close---------------------------------------
 $arr ['field'] [] = array ('type' => 'accordion','close' => 'true' );
 
-$arr ['field'] ['ckeditor'] = array ('type' => 'ckeditor5','value' => 'This is <b>html</b><br><br>...and more', 'items'=>"['bold','italic','alignment','link']" ); //,'autosave'=>'alert(editor.getData())'
+$arr ['field'] ['ckeditor'] = array ('type' => 'ckeditor5','value' => 'This is <b>html</b><br><br>...and more','items' => "['bold','italic','alignment','link']" ); //,'autosave'=>'alert(editor.getData())'
+$arr ['field'] ['color'] = array ('type' => 'color','label' => 'Color', 'value'=>'red' );
+$arr ['field'] ['icon'] = array ('type' => 'icon','label' => 'Icon' );
 
 $arr ['field'] ['submit'] = array ('type' => 'button','value' => 'Submit','class' => 'submit','color' => 'green' );
 
@@ -56,6 +57,8 @@ $output_form = call_form ( $arr );
 <title>Form | Semantic UI | PHP</title>
 <link rel="stylesheet" href="../semantic/dist/semantic.min.css">
 <link rel='stylesheet' type='text/css' href='../jquery-upload/css/jquery.fileupload.css'>
+<link rel='stylesheet' type='text/css'
+	href='../plugins/colorpicker-master/dist/css/default-picker/light.min.css'>
 </head>
 <body>
 	<div class="ui main text container">
@@ -70,6 +73,7 @@ $output_form = call_form ( $arr );
 	<script src="../semantic/dist/semantic.min.js"></script>
 	<script src="../js/smart_form.js"></script>
 	<script src="../ckeditor5/build/ckeditor.js"></script>
+	<script src='../plugins/colorpicker-master/dist/js/default-picker.min.js'></script>
 	<?=$output_form['js']?>
 </body>
 </html>

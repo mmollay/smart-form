@@ -1,9 +1,12 @@
 <?php
 $total_td = '';
 
+if (! is_array ( $arr ['th'] ))
+	return;
 
-if (!is_array($arr ['th'])) return;
-
+if ($arr ['list'] ['footer'] === false)
+	return;
+	
 foreach ( $arr ['th'] as $key => $value ) {
 
 	$class = $value ['class'];
@@ -24,11 +27,10 @@ foreach ( $arr ['th'] as $key => $value ) {
 
 		// Get Total value
 		$query_sql_total = "SELECT SUM($key) sum_$key FROM  $table_total  WHERE 1 $sql_total";
-		
+
 		if ($arr ['mysql'] ['debug'])
-			echo "<hr><pre>Total:<br>".htmlspecialchars($query_sql_total)."</pre><hr>";
-			
-		
+			echo "<hr><pre>Total:<br>" . htmlspecialchars ( $query_sql_total ) . "</pre><hr>";
+
 		$query_total = $GLOBALS ['mysqli']->query ( $query_sql_total ) or die ( mysqli_error ( $GLOBALS ['mysqli'] ) );
 		$array_total = mysqli_fetch_array ( $query_total );
 
@@ -55,6 +57,7 @@ foreach ( $arr ['th'] as $key => $value ) {
 }
 
 if ($count_total) {
+
 	if (is_array ( $arr ['tr'] ['buttons'] ['left'] ))
 		$total_td .= "<td>Summe</td>";
 

@@ -1,7 +1,7 @@
 <?php
 foreach ( $_POST as $key => $value ) {
 	//$GLOBALS[$key] = $GLOBALS['mysqli']->real_escape_string ( $value );
-	if ($value)
+	//if ($value)
 		$td .= "<tr><td>$key</td><td>$value</td></tr>";
 }
 

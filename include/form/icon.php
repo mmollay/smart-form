@@ -69,5 +69,5 @@ else {
 
 $type_field = "
 <div class='ui fluid action input'>
-<input class='$form_id $class_input' placeholder='icon'  type='text' name ='$id' id='$id' value='$value'><div class='{$arr['form']['size']} ui icon button tooltip-click' data-html=\"$data_html\" data-position='bottom right'><i id='button_icon_$id' class='$button_value $value large icon'></i></div>
+<input class='$form_id $class_input' placeholder='icon'  type='text' name ='$id' id='$id' value='$value'><div class='{$arr['form']['size']} ui icon button tooltip-click' data-html=\"$data_html\" data-position='bottom right'><i id='button_icon_$id' class='$button_value $value icon'></i></div>
 </div>";
