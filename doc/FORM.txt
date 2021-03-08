@@ -1,0 +1,309 @@
+ 
+ *
+ * FIELDS************************************************************************************
+ *
+ * 'field' => [tab]
+ * : 'tabs' => arr('first' => 'tab1, 'second' => 'tab2')
+ * : 'active' =>'first'
+ * : 'class' => 'pointing secondary red' | 'secondary red' // Default: top attached
+ * : content_class'=>"secondary red inverted", 'basic' = 'keine Darstellung von Rahmen
+ * : 'close' => true
+ *
+ * 'field' => [accordion]
+ * : 'title' =>'ACC1';
+ * : 'active' =>'first' //by default thia accordion is open
+ * : 'class' => 'pointing secondary red' | 'secondary red' // Default: top attached
+ * : content_class'=>"secondary red inverted", 'basic' = 'keine Darstellung von Rahmen
+ * : 'close' => true*
+ *
+ * 'field' => [header]
+ * : 'placeholder' => 'Vorname'
+ * : 'value' => 'wert'
+ * : 'value_default' => 'wert' //Wenn leer ist wird dieser Wert genommen
+ * : 'validate' => true | email | number,.... (http://semantic-ui.com/behaviors/form.html#/examples)
+ * : prompt => 'Bitte Eingabe machen'; //bei Validate Text für Beschreibung bei Fehler
+ * : rules => array ( [ 'type' => 'email' , prompt => 'Email angeben' ],[ 'type' => 'max[6]' , prompt => 'Min. 6 Zeichen angeben' ],[ 'type' => 'max[6]' , prompt => 'Min. 6 Zeichen angeben' ] )
+ * : rules => 'empty' //Schnelle Version
+ * : 'disabled' => true
+ * : read_only = true
+ * : class => four wide (one, two, three, ... sixten)
+ * : 'info' => 'Infotext für jeweiliges Eingabefeld'
+ * : 'label' => 'Bezeichnung', (oder "true" - Wird ohne Text angezeigt aber die Inhalt mit "leer" befüllt ( damit Feld in der richtigen Postion erscheint
+ * : segment => true; or 'red,...' (http://semantic-ui.com/elements/segment.html
+ * : 'message' => true; or 'red,...'
+ *
+ * * 'field' => [header]
+ * : 'text' => 'Überschrift'
+ * : 'size' => '4' (h1-h6)
+ * : 'class' => 'dividing red large' (Unterstrichen, gross, rot)
+ *
+ * 'field' =>[uploader]
+ * : upload_dir => '/uplaod/'; //Immer absoluten Pfad angeben
+ * : upload_'url' => 'upload/';
+ * : options => array (imageMaxWidth => 1000, imageMaxHeight => 1000) Bsp.: verkleinert das Bild schon Clientseitig auf die gewünschte Grösse - verhindert Ladezeiten
+ * : card_class =>'four stackable' //Darstellung
+ * : mode => 'single | multi' Default is 'multi'
+ * : '-> server_name => 'https://center.ssi.at' //übergibt einen gesamten Pfad bei Submit sonst verweist er auf den eigenen Server - gilt vorerst nur im Singlemode
+ * : ajax_ 'success' => "$('#key').focus();
+ * : button_upload => "Foto zum Hochladen auswählen";
+ * : button_upload => array('text'=>"Foto zum Hochladen auswählen", 'color' => 'red', 'icon' => 'upload' );
+ * : button_upload => 'hidden'
+ * : accept' => array('png','jpg','jpeg') //Defaut - 'png','jpg','jpeg','gif'
+ * : thumbnail => array ( 'crop' => true , 'max_width' => 100 , 'max_height' => 100 ) //Default array ( 'crop' => true , 'max_width' => 200 , 'max_height' => 200 )
+ * : webcam => array('width'=>'800','height'=>'600') | true (default 640x480)
+ * : dropzone => array('style'=>'height:100px;')
+ * : interactions => array('removeable=>false,'sortable'=>true); //default removeable => true, sor'table' => false
+ *
+ * 'field' =>[gallery] //Zeigt eine Gallery
+ * : file_dir => '/upload/';
+ * : file_'url' => 'upload/';
+ * : card_class =>'four stackable'
+ * : accept' => array('png','jpg','jpeg')
+ * : thumbnail => array ( 'crop' => true , 'max_width' => 100 , 'max_height' => 100 )
+ *
+ * 'field' => [ckeditor]
+ * : 'config' => ""
+ * `-> //autosave "on: { instanceReady: function() { var buffer = CKEDITOR.tools.eventsBuffer( 5000, function() { $.ajax({ url: 'inc/save_nl_content.php', type :'POST' , data: ({ id : '{$_POST['update_id']}', text : $('#text').val() }) }); } ); this.on( 'change', buffer.input ); } }";
+ *
+ * 'field' => [ckeditor_inline] //using just inner div
+ * : 'config' => "";
+ * `-> //autosave "on: { instanceReady: function() { var buffer = CKEDITOR.tools.eventsBuffer( 5000, function() { $.ajax({ url: 'inc/save_nl_content.php', type :'POST' , data: ({ id : '{$_POST['update_id']}', text : $('#text').val() }) }); } ); this.on( 'change', buffer.input ); } }";
+ *
+ * : 'toolbar' =>'basic' | 'mini' | 'simple'
+ * :
+ * 'field' => [color] //colorpicker
+ *
+ * 'field' => [icon] Auswahl der semantic-ui Icons
+ * : array_'icon' => array('search','tags') //optional setting
+ *
+ * 'field' => ['toggle' , 'checkbox' , 'slider']
+ * : 'onchange' => alert( $(this).val() ) ;
+ * : 'label' => 'Text neben checkbox'
+ * : label_'text' => 'Titel der checkbox'
+ * : class_input => 'no_auto_save',
+ *
+ * 'field' => [button]
+ * : 'class' => 'red'
+ * : 'class_button' => 'fluid red' //gesamte Breite
+ * : 'onclick' => 'alert('test');
+ * : 'onclick' => 'window.open('index.php')';
+ * : 'onclick' => '$('#form_name.ui.form').submit()'; //Sumit - Formular
+ * : 'tooltip' => 'Kicke um weiter zu kommen';
+ * : 'value' or 'text' => 'Button-text'
+ *
+ * 'field' => [input]
+ * : 'label_right' => ".html"; (id='label_left_$id')
+ * : 'label_right_class' => "button"
+ * : 'label_right_id' => "id"
+ * : 'label_right_tooltip' => "Mehr Info zum Element"
+ * : 'label_right_click' => "alert('test');" //window.location.replace("http://stackoverflow.com"); //window.open("file2.html"); - New window
+ * : 'label_left' => "http://"; (id='label_right_$id')
+ * : 'label_left_class' => "button"
+ * : 'label_left_id' => "id"
+ * : 'lable_left_click' => "alert('test');"
+ * : 'label_left_tooltip' => "Mehr Info zum Element"
+ * : 'focus' => true (dropdown multiselect with class "search" doesn't work)
+ * : 'icon' => time
+ * : 'search' => true //DEVELOP muss noch in den Funktionen vervollständigt werden (Bsp. Faktura -> issues -> form)
+ * $('.ui.search.text').search({ apiSettings: { url: 'inc/search_list.php?q={query}' }, minCharacters : 2, onSelect : function(result,response){ $('#text').val(result['description']); } });
+ *
+ * : 'class_input' => 'autosave' Erweitert das Inputfeld mit einer classe //Bsp.: Wenn gewisse Felder mit Autosave gespeichert werden sollen
+ * : 'icon_position' => left(default) OR right
+ * : 'format' => 'euro',dollar,percent,%
+ * : 'time' => true (old version)
+ * : 'clearable' => true //zeigt einen Button zu löschen des Inhaltes an
+ *
+ * 'field' => [slider]
+ * : min=>0
+ * : max=>1000
+ * : step=>10
+ * : unit=>'Tagen'
+ * : slide=>alert(ui.value) //call after slide
+ * : hide_number=>true //Disable the value (int)
+ *
+ *
+ *
+ * 'field' => ['time'](new version)
+ * : 'option'=>"format: 'H:mm' Bsp.: felicegattuso.com/projects/datedropper/
+ *
+ * 'field' => ['date'] (new version)
+ * : 'option' => " data-lock='from' " Bsp.: felicegattuso.com/projects/timedropper/
+ *
+ * 'field' => [textarea]
+ * : 'rows' => 2 //Default = ''
+ * : readonly => true
+ *
+ * 'field' => [recaptcha] (no-robot-checker) from Google //https://www.google.com/recaptcha/
+ * //Client-Side
+ * <script src='https://www.google.com/recaptcha/api.js'></script> muss eingebunden werden
+ * //php $_POST['recaptcha'] = '$key' (wird übergeben; *
+ * //Server-Side
+ * $secretKey = 'xxxxxxxxxx';
+ * $verifydata = file_get_contents ( 'https://www.google.com/recaptcha/api/siteverify?secret=' . $secretKey . '&response=' . $recaptcha );
+ * $response = json_decode ( $verifydata );
+ * if ($response->success == false) {
+ * echo "alert('Bitte bestätigen, dass Sie kein Roboter sind!');";
+ * exit ();
+ * } elseif ($response->success == true) {
+ * //echo 'ok';
+ * }
+ *
+ * 'field' => [smart_password] (erzeugt automatisch 2 Felder mit Validate
+ *
+ * 'field' => [dropdown] //old version "select"
+ * : min=>0 (erzeugt ein array wie bei Slider)
+ * : max=>1000
+ * : step=>10
+ * : array => array('title_1'=>Überschrift','1'=>'Eins','2' => 'Zwei') //title_xxxx - für OptGroup
+ * : array => 'country' //ruft automatisch ein array auf
+ * : array => 'color' //Auflistung der Standardfarben von semantic-ui
+ * : array => 'timezone' //Ruft alle Timezonen auf
+ * : array => range(0, 12) //von bis oder mit Step range (0,12,3)
+ * : array_mysql => 'SELECT id,name FROM user'; //bsp.: id = key, name = value
+ * : settings => fullTextSearch (Bsp.:) => http://semantic-ui.com/modules/dropdown.html#/settings
+ * : settings => 'onChange: function(value, text, $selectedItem) { $(\'#form_select_comp.ui.form\').submit(); }';
+ * :'onchange'=>"alert(value)";
+ * : 'placeholder' => '--bitte wählen--' || placeholder = '' -> erster Wert im Select wird automatisch genommen
+ * : 'class' => 'search' //Es kann im Dropdown gesucht werden
+ * : search => false | true
+ * : 'clear' => false //Inhalt löschen //Default = true (Dropdown Clear X)
+ * : url: => 'test.php?search={query}' //get array
+ * : column => 'two';
+ * : long => true; //more views
+ *
+ * -------------------------------------------------------------------------------------------------------------------
+ * Request array (json) für url!
+ * Für selectierte Werte einfach mit array übergeben (Bsp.: ssi_newsletter->content_campagne.php)
+ * -------------------------------------------------------------------------------------------------------------------
+ * header("Content-Type: application/json; charset=UTF-8");
+ * require_once ('../mysql.inc');
+ * $search = $_GET['search']; // suchfeld
+ * $result = $GLOBALS['mysqli']->query("SELECT contact_id value, if (firstname>'',CONCAT(firstname,' (',email,')'),email) name FROM contact WHERE CONCAT(email, firstname, secondname) LIKE '%$search%' AND user_id = '$user_id' LIMIT 10");
+ * $outp["results"] = $result->fetch_all(MYSQLI_ASSOC);
+ * $outp["success"] = true;
+ * echo json_encode($outp);
+ * -------------------------------------------------------------------------------------------------------------------
+ *
+ * 'field' => [date]
+ * : 'setting' => array ('type' => 'time');
+ * : 'setting' => {'type':'time'} (json)
+ * : 'placeholder' => 'Datum wählen
+ *
+ * 'field' => [multiselect]
+ * : array => array('1'=>'Eins','2' => 'Zwei')
+ * : handler => POST wird string mit "," gentrennt $_POST['groups'] = explode(',',$_POST['groups']); => array zum verarbeiten
+ *
+ * 'field' => [radio]
+ * : array => array('1'=>'Eins','2' => 'Zwei')
+ * : min=>0 (erzeugt ein array wie bei Slider)
+ * : max=>1000
+ * : step=>10
+ * : grouped => true //radio untereinander
+ * : overflow => auto true false //Wenn radio zu lange ist
+ * : 'onchange' => alert( $(this).val() );
+ * : default_select => true; //Wählt das erste Feld standardmässig aus
+ * : class_radio => 'huge'
+ * : class_radio_text => 'green'
+ *
+ * 'field' => [text] (alte Version) wurde durch content ersetzt
+ * : 'value' => 'das ist ein test'
+ * : 'align' => 'center' //left and right
+ *
+ * 'field' => [content]
+ * : 'text' => 'value' => 'test {data}' //mit Data kann ein Wert eingebunden werden, der aus der Datenbank gezogen wird
+ * : 'id' => 'test'
+ * : class_content => 'cktext'
+ * : contentedi'table' => true
+ * : 'align' => 'center' //left and right
+ *
+ * field - ALLGEMEINE PARAMETER
+ * : 'type' => [text|input|hidden|.......]
+ * : 'tab' => 'first'
+ * : 'label' => 'Vorname'
+ * : label>check_message //Platzhalte neben label für eigene Parameter (Bsp.: $('#label_{name}>.check_message').html ('text neben Labeltext')
+ * : 'label_class' => 'admin' //Erweiterung und mehr
+ * : 'style' => 'height:100px'
+ * : 'id' => 'firstname' OR $arr['field']['firstname']
+ * : 'class' => 'class'
+ * : setting =>"contenteditable='true'" //oder auch class='test' usw,...
+ *
+ * 'field' => [finder]
+ * : 'onchange' => 'alert('test'); // Platzhalter für ID {id} alert('{id}')
+ * Wenn exploerer genutzt wird muss für das Modal
+ * <div id='show_explorer' class='fullscreen ui modal'><div class='header'>Dateiverwaltung</div><div class='content' id=show_explorer_content></div></div>
+ * eingebaut werden
+ *
+ * hidden
+ * : element => 'wasser';
+ *
+ * buttons
+ * : 'id' => 'button_list'
+ * : 'class' => ''
+ * : 'align' => center|left|right
+ *
+ * button[submit | reset | clear ]
+ * : 'value' => 'Schließen'
+ * : 'color' => 'red'
+ * : 'class' => 'huge'
+ * : 'icon' => 'save'
+ * : 'tooltip' => 'Kicke um weiter zu kommen';
+ * : 'js' => 'alert('close')';
+ * : 'onclick' => 'alert('close')';
+ *
+ *
+ * $arr['field'][''] = array ('type' =>'line'); //divider
+ * $arr['field'][] = array ('type'=>'header','text'=>'Database:','size'=>'large'); //Header
+ *
+ *
+ *
+ * STYLE
+ * row_$id = Spalte mit label Bsp. $('#size').hide(); //Zeile verstecken
+ *
+ * BSP.:
+ * $arr['field'][''] = array ( tab=>'', 'label' => '', 'type' =>'');
+ *
+ * //Divider Trennzeichen
+ * $arr['field'][] = array ( 'type' => 'div', 'class' => 'ui horizontal divider', 'text'=>"oder" );
+ * $arr['field'][] = array ( 'type' => 'div', 'close' => true );
+ *
+ * //Accordion
+ * $arr['field'][] = array ( 'type' => 'accordion' , 'title' => 'Schrift', 'active' => true, 'class'=>'styled' );
+ * $arr['field']['test1'] = array ( 'label' => 'Input' , 'type' => 'input' );
+ * $arr['field'][] = array ( 'type' => 'accordion' , 'title' => 'Kopfzeile' , 'split' => true );
+ * $arr['field']['test2'] = array ( 'label' => 'Input2' , 'type' => 'input' );
+ * $arr['field'][] = array ( 'type' => 'accordion' , 'close' => true );
+ *
+ *
+ *
+ * $arr['field']['text'] = array ( 'tab' => 'first' , 'type' => 'ckeditor' , 'toolbar' =>'mini' , 'value' => $text , 'focus' => true );
+ *
+ * * //Submit kann auch so aufgerufen werden
+ * $('#form_name.ui.form').submit();
+ *
+ * //Dropdown set selected -> $('#dropdown_$key').dropdown('set selected','$value');
+ * //Dropdawn get value -> $('#dropdown_$key').dropdown('get value');
+ * //Dropdawn get text -> $('#dropdown_$key').dropdown('get text'); //Inhalt
+ * //Dropdown onChange -> $('#dropdown_$key').dropdown({ onChange : function(value) { alert(value); } });
+ *
+ *
+ * //Hinzufügen in Dropdown-Wert
+ * //add_val_dropdown('dropdownID',value,title);
+ * //Löschen aller Dropdown-Werte
+ * //emtpy_val_dropdown('dropdownID');
+ *
+ * //Radio $('.ui.checkbox.$id').checkbox('setting', 'onChange', function () { alert( $(this).val()) });";
+ * $('.ui.checkbox.$id').checkbox('setting', 'onChange', function () { alert( $(this).val()) });";
+ * //Radio Wert auslesen $('input[name=auswahl]:checked').val();
+ *
+ * BSP für Modal:
+ * $('.ui.modal.new_page')
+ * .modal('observeChanges')
+ * .modal({
+ * onApprove : function() { $('#form_name.ui.form').submit() return false; },
+ * onDeny : function() { $('.ui.modal.new_page').modal('hide'); }
+ * })
+ * .modal('show')
+ *
+ * //Einbinden von Scripten
+ * echo "<script>appendScript('js/form_newsletter.js');</script>"; //verhindert das bei AJAX script immer neu geladen wird
+ */
